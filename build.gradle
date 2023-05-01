@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 group = 'cn.watchdog.authagent'
@@ -10,10 +11,19 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'asm:asm:3.3.1'
 }
 
-test {
-    useJUnitPlatform()
+jar {
+    manifest {
+        attributes 'Premain-Class': 'cn.watchdog.authagent.AuthAgent'
+    }
 }
+
+shadowJar {
+    dependencies {
+        include(dependency('asm:asm:3.3.1'))
+    }
+}
+
+tasks.build.dependsOn tasks.shadowJar
